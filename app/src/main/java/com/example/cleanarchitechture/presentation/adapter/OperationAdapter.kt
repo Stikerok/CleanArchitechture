@@ -1,10 +1,8 @@
 package com.example.cleanarchitechture.presentation.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cleanarchitechture.R
@@ -14,7 +12,7 @@ class OperationAdapter internal constructor(
     private var data: List<Operation>
 ) : RecyclerView.Adapter<OperationAdapter.ViewHolder>() {
 
-    //private var listener: ItemClickListener? = null
+    private var listener: ItemClickListener? = null
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
@@ -27,7 +25,9 @@ class OperationAdapter internal constructor(
 
         val item = data[position]
         viewHolder.text.text = item.toString()
-
+        viewHolder.itemView.setOnClickListener{
+            listener?.onClick(data[position])
+        }
     }
 
     override fun getItemCount() = data.size
@@ -39,17 +39,12 @@ class OperationAdapter internal constructor(
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val text: TextView = view.findViewById<TextView>(R.id.operation_text)
-            .apply {
-                setOnClickListener {
-                    //listener?.onItemClick(adapterPosition)
-                }
-            }
+
 
     }
-
-//    fun setListener(itemClickListener: ItemClickListener?) {
-//        listener = itemClickListener
-//    }
+    fun setListener(itemClickListener: ItemClickListener?) {
+        listener = itemClickListener
+    }
 //
 //    fun cellChanged(position: Int, value: Int) {
 //        data[position] = value
