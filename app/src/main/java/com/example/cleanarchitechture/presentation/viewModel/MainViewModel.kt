@@ -34,8 +34,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun onOperationSelected (operation: Operation) {
-        operationsUseCase.deleteOperation(operation)
-        operations.value = operationsUseCase.getOperations()
+        viewModelScope.launch {
+            operationsUseCase.deleteOperation(operation)
+            operations.value = operationsUseCase.getOperations()
+        }
     }
 
 
@@ -52,9 +54,9 @@ class MainViewModel : ViewModel() {
     }
 
     init {
-
-        operations.value = operationsUseCase.getOperations()
-
+        viewModelScope.launch {
+            operations.value = operationsUseCase.getOperations()
+        }
     }
 
 

@@ -2,8 +2,8 @@ package com.example.cleanarchitechture.domain
 
 interface OperationsRepository {
 
-    fun getOperations(): List<Operation>
-    fun addOperation(operation: Operation)
-    fun deleteOperation (operation: Operation)
+    suspend fun getOperations(): List<Operation>
+    suspend fun addOperation(operation: Operation)
+    suspend fun deleteOperation (operation: Operation)
 
 }

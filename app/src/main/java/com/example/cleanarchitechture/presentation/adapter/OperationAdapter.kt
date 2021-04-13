@@ -38,7 +38,7 @@ class OperationAdapter internal constructor(
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val text: TextView = view.findViewById<TextView>(R.id.operation_text)
+        val text: TextView = view.findViewById(R.id.operation_text)
 
 
     }
