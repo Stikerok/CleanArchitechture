@@ -17,7 +17,7 @@ object Dependencies {
     }
 
     fun getCalculateUseCase():CalculateUseCase{
-        return CalculateUseCaseImplementation(getCalculateRepository(), getOperaationsRepository())
+        return CalculateUseCaseImp(getCalculateRepository(), getOperaationsRepository())
     }
 
     fun getOperationsUseCase(): OperationsUseCase{
