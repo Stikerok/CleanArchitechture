@@ -2,6 +2,10 @@ package com.example.cleanarchitechture
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import androidx.room.Room
+import com.example.cleanarchitechture.db.PersonDb
+import com.example.cleanarchitechture.entity.Person
 import com.example.cleanarchitechture.presentation.ui.MainFragment
 
 class MainActivity : AppCompatActivity() {
@@ -11,8 +15,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance())
-                    .commitNow()
+                .replace(R.id.container, MainFragment.newInstance())
+                .commitNow()
         }
+
     }
 }

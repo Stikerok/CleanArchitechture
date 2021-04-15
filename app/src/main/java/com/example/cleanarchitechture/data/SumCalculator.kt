@@ -3,9 +3,7 @@ package com.example.cleanarchitechture.data
 import com.example.cleanarchitechture.domain.CalculateRepository
 import com.example.cleanarchitechture.domain.Operation
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.coroutineContext
 
 class SumCalculator : CalculateRepository {
 

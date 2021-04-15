@@ -1,6 +1,6 @@
 package com.example.cleanarchitechture.domain
 
-class CalculateUseCaseImp(
+class CalculateUseCaseImpl(
     private val calculateRepository: CalculateRepository,
     private val operationsRepository: OperationsRepository
 ) : CalculateUseCase {
@@ -11,7 +11,4 @@ class CalculateUseCaseImp(
         operationsRepository.addOperation(operation)
         return result
     }
-
-
-
 }
