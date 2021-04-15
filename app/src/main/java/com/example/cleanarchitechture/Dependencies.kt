@@ -1,6 +1,5 @@
 package com.example.cleanarchitechture
 
-import android.content.Context
 import com.example.cleanarchitechture.data.OperationsLocalSource
 import com.example.cleanarchitechture.data.SumCalculator
 import com.example.cleanarchitechture.db.LocalDatabaseSource

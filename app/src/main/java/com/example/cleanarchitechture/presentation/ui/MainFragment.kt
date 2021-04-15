@@ -9,15 +9,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cleanarchitechture.R
-import com.example.cleanarchitechture.domain.Operation
+import com.example.cleanarchitechture.entity.Person
 import com.example.cleanarchitechture.presentation.adapter.ItemClickListener
-import com.example.cleanarchitechture.presentation.adapter.OperationAdapter
+import com.example.cleanarchitechture.presentation.adapter.PersonAdapter
 import com.example.cleanarchitechture.presentation.viewModel.CalculationState
 import com.example.cleanarchitechture.presentation.viewModel.MainViewModel
 
@@ -32,10 +31,10 @@ class MainFragment : Fragment(), ItemClickListener {
     private lateinit var viewModel: MainViewModel
     private lateinit var firstInput: EditText
     private lateinit var secondInput: EditText
-    private lateinit var calculateBtn: Button
-    private lateinit var operations: RecyclerView
+    private lateinit var addPersonBtn: Button
+    private lateinit var persons: RecyclerView
     private lateinit var textState: TextView
-    private var adapter = OperationAdapter(listOf())
+    private var adapter = PersonAdapter(listOf())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,20 +47,18 @@ class MainFragment : Fragment(), ItemClickListener {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         firstInput.doAfterTextChanged {
-            viewModel.first = it.toString()
+            viewModel.name = it.toString()
         }
         secondInput.doAfterTextChanged {
-            viewModel.second = it.toString()
+            viewModel.rating = it.toString()
         }
-        calculateBtn.setOnClickListener {
+        addPersonBtn.setOnClickListener {
 
-            val toast =
-                Toast.makeText(requireContext(), "${viewModel.calculate()}", Toast.LENGTH_SHORT)
-            toast.show()
+           viewModel.addPerson()
 
         }
 
-        viewModel.getOperations().observe(viewLifecycleOwner, Observer {
+        viewModel.getPersons().observe(viewLifecycleOwner, Observer {
             adapter.setData(it)
         })
         viewModel.calculationState.observe(viewLifecycleOwner, Observer {
@@ -73,9 +70,8 @@ class MainFragment : Fragment(), ItemClickListener {
                 }
             )
             when (it){
-                CalculationState.Free -> calculateBtn.isEnabled = true
-                CalculationState.Loading -> calculateBtn.isEnabled = false
-                CalculationState.Result -> calculateBtn.isEnabled = false
+                CalculationState.Free -> addPersonBtn.isEnabled = true
+                else -> addPersonBtn.isEnabled = false
             }
         })
     }
@@ -85,12 +81,12 @@ class MainFragment : Fragment(), ItemClickListener {
 
         firstInput = view.findViewById(R.id.input_first)
         secondInput = view.findViewById(R.id.input_second)
-        calculateBtn = view.findViewById(R.id.calculate_btn)
-        operations = view.findViewById(R.id.operations_list)
+        addPersonBtn = view.findViewById(R.id.calculate_btn)
+        persons = view.findViewById(R.id.persons_list)
         textState = view.findViewById(R.id.text_out)
 
-        operations.layoutManager = LinearLayoutManager(requireContext())
-        operations.adapter = adapter
+        persons.layoutManager = LinearLayoutManager(requireContext())
+        persons.adapter = adapter
         adapter.setListener(this)
 
 
@@ -101,8 +97,9 @@ class MainFragment : Fragment(), ItemClickListener {
         adapter.setListener(null)
     }
 
-    override fun onClick(operation: Operation) {
-       viewModel.onOperationSelected(operation)
+    override fun onClick(person: Person) {
+        viewModel.onOperationSelected(person)
     }
+
 
 }

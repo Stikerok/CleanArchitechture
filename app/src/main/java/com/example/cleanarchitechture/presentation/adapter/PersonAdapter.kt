@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cleanarchitechture.R
-import com.example.cleanarchitechture.domain.Operation
+import com.example.cleanarchitechture.entity.Person
 
-class OperationAdapter internal constructor(
-    private var data: List<Operation>
-) : RecyclerView.Adapter<OperationAdapter.ViewHolder>() {
+class PersonAdapter internal constructor(
+    private var data: List<Person>
+) : RecyclerView.Adapter<PersonAdapter.ViewHolder>() {
 
     private var listener: ItemClickListener? = null
 
@@ -22,17 +22,16 @@ class OperationAdapter internal constructor(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-
         val item = data[position]
         viewHolder.text.text = item.toString()
         viewHolder.itemView.setOnClickListener{
-            listener?.onClick(data[position])
+            listener?.onClick(item)
         }
     }
 
     override fun getItemCount() = data.size
 
-    fun setData(data: List<Operation>){
+    fun setData(data: List<Person>){
         this.data = data
         notifyDataSetChanged()
     }
@@ -45,9 +44,5 @@ class OperationAdapter internal constructor(
     fun setListener(itemClickListener: ItemClickListener?) {
         listener = itemClickListener
     }
-//
-//    fun cellChanged(position: Int, value: Int) {
-//        data[position] = value
-//        notifyDataSetChanged()
-//    }
+
 }
