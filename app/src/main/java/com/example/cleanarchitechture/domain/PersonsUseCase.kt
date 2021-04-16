@@ -4,5 +4,7 @@ import com.example.cleanarchitechture.entity.Person
 import kotlinx.coroutines.flow.Flow
 
 interface PersonsUseCase {
-    fun getPersons() : Flow<List<Person>>
+    fun getPersons(): Flow<List<Person>>
+    fun addPerson(person: Person)
+    fun deletePerson(person: Person)
 }
