@@ -1,5 +1,6 @@
 package com.example.cleanarchitechture
 
+import android.content.Context
 import com.example.cleanarchitechture.data.OperationsLocalSource
 import com.example.cleanarchitechture.data.SumCalculator
 import com.example.cleanarchitechture.db.LocalDatabaseSource
@@ -18,8 +19,11 @@ object Dependencies {
         return operationsRepository
     }
 
-    fun getPersonUseCase(): PersonsUseCase {
-        return PersonsUseCaseImpl(personRepository)
+    fun getPersonUseCase(context: Context): PersonsUseCase {
+        return PersonsUseCaseImpl(getPersonsRepository(context))
+    }
+    fun getPersonsRepository(context: Context): PersonRepository {
+        return personRepository
     }
 
     fun getCalculateUseCase():CalculateUseCase{

@@ -1,6 +1,7 @@
 package com.example.cleanarchitechture.domain
 
 import com.example.cleanarchitechture.entity.Person
+import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
 
 class PersonsUseCaseImpl(
@@ -8,6 +9,10 @@ class PersonsUseCaseImpl(
 ) : PersonsUseCase {
     override fun getPersons(): Flow<List<Person>> {
         return personRepository.getPersons()
+    }
+
+    override fun getPersonsRx(): Observable<List<Person>> {
+        return personRepository.getPersonsRx()
     }
 
     override fun addPerson(person: Person) {

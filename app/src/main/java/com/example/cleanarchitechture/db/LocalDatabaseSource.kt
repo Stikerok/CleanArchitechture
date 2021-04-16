@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.cleanarchitechture.domain.PersonRepository
 import com.example.cleanarchitechture.entity.Person
+import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
 
 class LocalDatabaseSource (context: Context) : PersonRepository {
@@ -13,6 +14,10 @@ class LocalDatabaseSource (context: Context) : PersonRepository {
 
     override fun getPersons(): Flow<List<Person>> {
        return db.getPersonDao().selectAll()
+    }
+
+    override fun getPersonsRx(): Observable<List<Person>> {
+        return db.getPersonDao().selectAllRx().share()
     }
 
     override fun addPerson(person: Person) {

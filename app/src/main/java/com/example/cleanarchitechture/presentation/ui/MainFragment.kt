@@ -13,12 +13,19 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cleanarchitechture.Dependencies
 import com.example.cleanarchitechture.R
 import com.example.cleanarchitechture.entity.Person
 import com.example.cleanarchitechture.presentation.adapter.ItemClickListener
 import com.example.cleanarchitechture.presentation.adapter.PersonAdapter
 import com.example.cleanarchitechture.presentation.viewModel.CalculationState
 import com.example.cleanarchitechture.presentation.viewModel.MainViewModel
+import com.example.cleanarchitechture.presentation.viewModel.MainViewModelFactory
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 
 class MainFragment : Fragment(), ItemClickListener {
@@ -35,6 +42,7 @@ class MainFragment : Fragment(), ItemClickListener {
     private lateinit var persons: RecyclerView
     private lateinit var textState: TextView
     private var adapter = PersonAdapter(listOf())
+    private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,18 +53,27 @@ class MainFragment : Fragment(), ItemClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        val factory = MainViewModelFactory(Dependencies.getPersonUseCase(requireContext()))
+        viewModel = ViewModelProvider(this, factory).get(MainViewModel::class.java)
         firstInput.doAfterTextChanged {
             viewModel.name = it.toString()
         }
         secondInput.doAfterTextChanged {
             viewModel.rating = it.toString()
         }
-        addPersonBtn.setOnClickListener {
-
-           viewModel.addPerson()
-
+        val observable = Observable.create<Unit> {emitter ->
+            addPersonBtn.setOnClickListener {
+                emitter.onNext(Unit)
+            }
         }
+
+        val subscribe = observable
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                viewModel.addPerson()
+            }
+        compositeDisposable.add(subscribe)
 
         viewModel.getPersons().observe(viewLifecycleOwner, Observer {
             adapter.setData(it)
@@ -69,7 +86,7 @@ class MainFragment : Fragment(), ItemClickListener {
                     CalculationState.Result -> R.string.state_result
                 }
             )
-            when (it){
+            when (it) {
                 CalculationState.Free -> addPersonBtn.isEnabled = true
                 else -> addPersonBtn.isEnabled = false
             }
@@ -95,6 +112,7 @@ class MainFragment : Fragment(), ItemClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         adapter.setListener(null)
+        compositeDisposable.dispose()
     }
 
     override fun onClick(person: Person) {

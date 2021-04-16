@@ -2,6 +2,7 @@ package com.example.cleanarchitechture.db
 
 import androidx.room.*
 import com.example.cleanarchitechture.entity.Person
+import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -14,4 +15,7 @@ interface PersonDao {
 
     @Query("SELECT * FROM Person")
     fun selectAll(): Flow<List<Person>>
+
+    @Query("SELECT * FROM Person")
+    fun selectAllRx(): Observable<List<Person>>
 }

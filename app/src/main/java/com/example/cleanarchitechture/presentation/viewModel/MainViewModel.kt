@@ -8,15 +8,20 @@ import androidx.lifecycle.viewModelScope
 import com.example.cleanarchitechture.Dependencies
 import com.example.cleanarchitechture.domain.*
 import com.example.cleanarchitechture.entity.Person
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    private val personsUseCase: PersonsUseCase
+) : ViewModel() {
 
-    private val personsUseCase: PersonsUseCase by lazy { Dependencies.getPersonUseCase() }
+//    private val personsUseCase: PersonsUseCase by lazy { Dependencies.getPersonUseCase() }
 
     var name: String = ""
     var rating: String = ""
@@ -24,6 +29,7 @@ class MainViewModel : ViewModel() {
     private val persons = MutableLiveData<List<Person>>(listOf())
     private val _calculationState = MutableLiveData<CalculationState>(CalculationState.Free)
     val calculationState: LiveData<CalculationState> = _calculationState
+    private var compositeDisposable = CompositeDisposable()
 
     fun getPersons(): LiveData<List<Person>> {
         return persons
@@ -53,11 +59,32 @@ class MainViewModel : ViewModel() {
     }
 
     init {
-        viewModelScope.launch {
-            personsUseCase.getPersons().collect {
+//        viewModelScope.launch {
+//            personsUseCase.getPersons().collect {
+//                persons.value = it
+//            }
+//        }
+        val subscribe = personsUseCase.getPersonsRx()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext {
+                Log.d("THREAD", "UpdateUI_${Thread.currentThread().name}")
+            }
+            .observeOn(Schedulers.io())
+            .filter {
+                Log.d("THREAD", Thread.currentThread().name)
+                it.size > 3
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete {
+                Log.d("THREAD", Thread.currentThread().name)
+            }
+            .doOnError {
+                Log.d("THREAD", Thread.currentThread().name)
+            }
+            .subscribe {
                 persons.value = it
             }
-        }
-
+        compositeDisposable.add(subscribe)
     }
 }
