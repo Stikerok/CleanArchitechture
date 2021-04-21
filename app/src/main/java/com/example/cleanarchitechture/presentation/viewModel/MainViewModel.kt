@@ -42,7 +42,7 @@ class MainViewModel(
         _calculationState.value = CalculationState.Free
     }
 
-    fun onOperationSelected(person: Person) {
+    fun onPersonSelected(person: Person) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 personsUseCase.deletePerson(person)
